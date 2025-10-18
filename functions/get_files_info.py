@@ -1,11 +1,23 @@
 import os
 
 def get_files_info(working_directory, directory="."):
-    directory = os.path.join(working_directory, directory)
-    print(directory)
+    try:    
+        target_directory = os.path.abspath(os.path.join(working_directory, directory))
 
+        if not target_directory.startswith(os.path.abspath(working_directory)):
+            return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
+        
+        if not os.path.isdir(target_directory):
+            return f'Error: "{directory}" is not a directory'
+        
+        contents = os.listdir(target_directory)
 
-current_dir = os.getcwd()
-print(current_dir)
+        return "\n".join(
+            list(map(
+                lambda x: f"- {x}: file_size={os.path.getsize(os.path.join(target_directory, x))}, is_dir={os.path.isdir(os.path.join(target_directory, x))}", contents)
+                )
+            )
 
-get_files_info(current_dir, directory=".")
+    except Exception as e:
+        return f"Error: {e}"
+    
