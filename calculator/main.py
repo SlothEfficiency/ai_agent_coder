@@ -7,13 +7,8 @@ from pkg.render import format_json_output
 
 def main():
     calculator = Calculator()
-    if len(sys.argv) <= 1:
-        print("Calculator App")
-        print('Usage: python main.py "<expression>"')
-        print('Example: python main.py "3 + 5"')
-        return
+    expression = "3 + 7 * 2"
 
-    expression = " ".join(sys.argv[1:])
     try:
         result = calculator.evaluate(expression)
         if result is not None:

@@ -1,6 +1,21 @@
 import os
 from functions.config import MAX_CHARS
+from google.genai import types
 
+
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself.",
+            ),
+        },
+    ),
+)
 
 def get_files_info(working_directory, directory="."):
     try:    
@@ -23,6 +38,21 @@ def get_files_info(working_directory, directory="."):
     except Exception as e:
         return f"Error: {e}"
     
+
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Returns the content of a file in the specified directory limited to 10000 characters, constrained to the working directory. You can only get 1 file at once.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The filepath to read the file from, relative to the working directory. If not provided, no file can be read.",
+            ),
+        },
+    ),
+)
 
 
 def get_file_content(working_directory, file_path):

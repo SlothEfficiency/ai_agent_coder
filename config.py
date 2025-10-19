@@ -1,0 +1,1 @@
+MAX_API_CALLS = 20
