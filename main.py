@@ -60,28 +60,35 @@ def let_it_cook(messages, verbose):
 
 def main():
     verbose, user_prompt = handle_arguments(sys.argv)
+    conversation_history = "conversation history:\n"
+    while True:
+        message_with_context = f"{conversation_history}new prompt: {user_prompt}"
+        print(f"{message_with_context=}")
+        messages = [types.Content(role="user", parts=[types.Part(text=message_with_context)])]
+        no_of_api_calls = 0
+        answer = ""
 
-    messages = [types.Content(role="user", parts=[types.Part(text=user_prompt)])]
-    no_of_api_calls = 0
-    final_answer = ""
+        try:
+            # LET IT COOK
+            while no_of_api_calls < MAX_API_CALLS and answer == "":
+                messages, answer = let_it_cook(messages, verbose)
+                no_of_api_calls += 1
 
-    try:
-        # LET IT COOK
-        while no_of_api_calls < MAX_API_CALLS and final_answer == "":
-            messages, final_answer = let_it_cook(messages, verbose)
-            no_of_api_calls += 1
-
-        # Overcooked
-        if no_of_api_calls == MAX_API_CALLS:
-            print(f"Maximum of {MAX_API_CALLS} API-calls was reached.")
-    
-        # for message in messages:
-        #     print(message)
+            # Overcooked
+            if no_of_api_calls == MAX_API_CALLS:
+                print(f"Maximum of {MAX_API_CALLS} API-calls was reached.")
         
-        print(final_answer)
+            # for message in messages:
+            #     print(message)
+            
+            print(answer)
+            user_prompt = input()
+            conversation_history+=f"old prompt:{user_prompt}\nold answer: {answer}\n"
 
-    except Exception as e:
-        print(f"It didnt cook because of {e}")
+      
+
+        except Exception as e:
+            print(f"It didnt cook because of {e}")
 
     
     
