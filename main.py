@@ -1,5 +1,5 @@
 import sys
-
+import argparse
 from google.genai import types
 
 from functions.call_function import call_function
@@ -9,24 +9,15 @@ from config import MAX_API_CALLS
 
 
 def handle_arguments(arguments):
-    verbose = False
-    if "--verbose" in arguments:
-        verbose = True
-        arguments.remove("--verbose")
-        
-    try:
-        user_prompt = arguments[1]
-    
-    except Exception as e:
-        print(f"{e} was thrown while handling input arguments of main(). Did you give a user prompt?")
-        exit(1)
-
-    return verbose, user_prompt
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--verbose", action="store_true", help="get a more verbose output")
+    parser.add_argument("prompt", help="The prompt sent to the AI agent")
+    args = parser.parse_args(arguments[1:])
+    return args.verbose, args.prompt
 
 
 def let_it_cook(messages, verbose):
-    api_call = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages,
-                                               config=config)
+    api_call = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages, config=config)
     for candidate in api_call.candidates:
         messages.append(candidate.content)
     
